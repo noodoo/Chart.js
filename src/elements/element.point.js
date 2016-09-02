@@ -47,6 +47,19 @@ module.exports = function(Chart) {
 				return;
 			}
 
+			if (pointStyle === 'level') {
+				var xScale = this._xScale;
+				var tickWidth;
+
+				if (xScale.options.type === 'category') {
+					tickWidth = xScale.getPixelForTick(1) - xScale.getPixelForTick(0);
+				} else {
+					// Average width
+					tickWidth = xScale.width / xScale.ticks.length;
+				}
+				radius = tickWidth / 2;
+			}
+
 			ctx.strokeStyle = vm.borderColor || defaultColor;
 			ctx.lineWidth = helpers.getValueOrDefault(vm.borderWidth, globalOpts.elements.point.borderWidth);
 			ctx.fillStyle = vm.backgroundColor || defaultColor;

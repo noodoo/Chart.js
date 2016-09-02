@@ -85,6 +85,7 @@ module.exports = function(Chart) {
 			ctx.lineTo(x + xOffset, y - yOffset);
 			ctx.closePath();
 			break;
+		case 'level':
 		case 'line':
 			ctx.beginPath();
 			ctx.moveTo(x - radius, y);
