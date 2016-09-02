@@ -67,6 +67,16 @@ module.exports = function(Chart) {
 			// Make sure we always have at least 2 ticks
 			maxTicks = Math.max(2, maxTicks);
 
+			var min = me.min;
+			var max = me.max;
+
+			// Add empty space on both axis sides if padding property is set
+			if (tickOpts.paddingRatio) {
+				var padding = Math.abs(max - min) * tickOpts.paddingRatio;
+				if (me.min !== 0) min -= padding;
+				if (me.max !== 0) max += padding;
+			}
+
 			// To get a "nice" value for the tick spacing, we will use the appropriately named
 			// "nice number" algorithm. See http://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
 			// for details.
@@ -76,11 +86,11 @@ module.exports = function(Chart) {
 			if (fixedStepSizeSet) {
 				spacing = getValueOrDefault(tickOpts.fixedStepSize, tickOpts.stepSize);
 			} else {
-				var niceRange = helpers.niceNum(me.max - me.min, false);
+				var niceRange = helpers.niceNum(max - min, false);
 				spacing = helpers.niceNum(niceRange / (maxTicks - 1), true);
 			}
-			var niceMin = Math.floor(me.min / spacing) * spacing;
-			var niceMax = Math.ceil(me.max / spacing) * spacing;
+			var niceMin = Math.floor(min / spacing) * spacing;
+			var niceMax = Math.ceil(max / spacing) * spacing;
 			var numSpaces = (niceMax - niceMin) / spacing;
 
 			// If very close to our rounded value, use it.
