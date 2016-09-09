@@ -53,6 +53,7 @@ module.exports = function(Chart) {
 
 				if (xScale.options.type === 'category') {
 					tickWidth = xScale.getPixelForTick(1) - xScale.getPixelForTick(0);
+					tickWidth *= xScale.options.categoryPercentage;
 				} else {
 					// Average width
 					tickWidth = xScale.width / xScale.ticks.length;
