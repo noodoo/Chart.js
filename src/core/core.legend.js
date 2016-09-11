@@ -318,7 +318,7 @@ module.exports = function(Chart) {
 					// Set the ctx for the box
 					ctx.save();
 
-					ctx.fillStyle = itemOrDefault(legendItem.fillStyle, globalDefault.defaultColor);
+					ctx.fillStyle = itemOrDefault(legendItem.strokeStyle, globalDefault.defaultColor);
 					ctx.lineCap = itemOrDefault(legendItem.lineCap, lineDefault.borderCapStyle);
 					ctx.lineDashOffset = itemOrDefault(legendItem.lineDashOffset, lineDefault.borderDashOffset);
 					ctx.lineJoin = itemOrDefault(legendItem.lineJoin, lineDefault.borderJoinStyle);
