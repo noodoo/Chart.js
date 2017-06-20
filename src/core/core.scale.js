@@ -369,6 +369,10 @@ module.exports = function(Chart) {
 				}
 			}
 
+			if (tickOpts.displayTop && display && !isHorizontal) {
+				me.paddingTop = tickFontSize / 2;
+			}
+
 			if (me.margins) {
 				me.paddingLeft = Math.max(me.paddingLeft - me.margins.left, 0);
 				me.paddingTop = Math.max(me.paddingTop - me.margins.top, 0);
@@ -478,6 +482,7 @@ module.exports = function(Chart) {
 		draw: function(chartArea) {
 			var me = this;
 			var options = me.options;
+
 			if (!options.display) {
 				return;
 			}
@@ -656,11 +661,27 @@ module.exports = function(Chart) {
 			});
 
 			// Draw all of the tick labels, tick marks, and grid lines at the correct places
-			helpers.each(itemsToDraw, function(itemToDraw) {
+			helpers.each(itemsToDraw, function(itemToDraw, index) {
+				var display = optionTicks.display;
+				var displayTop = optionTicks.displayTop;
+				var drawLabel = display || (index === 0 && displayTop);
+				var drawTick = gridLines.drawTicks && (display || !drawLabel);
+				var label = itemToDraw.label;
+
+				var x1 = itemToDraw.x1;
+				var x2 = itemToDraw.x2;
+				var tx1 = itemToDraw.tx1;
+				var tx2 = itemToDraw.tx2;
+
+				if (!display && drawLabel) {
+					x2 = x2 - context.measureText(label).width + (tx2 - tx1) / 2;
+				}
+
 				if (gridLines.display) {
 					context.save();
 					context.lineWidth = itemToDraw.glWidth;
 					context.strokeStyle = itemToDraw.glColor;
+
 					if (context.setLineDash) {
 						context.setLineDash(itemToDraw.glBorderDash);
 						context.lineDashOffset = itemToDraw.glBorderDashOffset;
@@ -668,29 +689,28 @@ module.exports = function(Chart) {
 
 					context.beginPath();
 
-					if (gridLines.drawTicks) {
-						context.moveTo(itemToDraw.tx1, itemToDraw.ty1);
-						context.lineTo(itemToDraw.tx2, itemToDraw.ty2);
+					if (drawTick) {
+						context.moveTo(tx1, itemToDraw.ty1);
+						context.lineTo(tx2, itemToDraw.ty2);
 					}
 
 					if (gridLines.drawOnChartArea) {
-						context.moveTo(itemToDraw.x1, itemToDraw.y1);
-						context.lineTo(itemToDraw.x2, itemToDraw.y2);
+						context.moveTo(x1, itemToDraw.y1);
+						context.lineTo(x2, itemToDraw.y2);
 					}
 
 					context.stroke();
 					context.restore();
 				}
 
-				if (optionTicks.display) {
+				if (drawLabel) {
 					context.save();
 					context.translate(itemToDraw.labelX, itemToDraw.labelY);
 					context.rotate(itemToDraw.rotation);
 					context.font = tickLabelFont;
 					context.textBaseline = itemToDraw.textBaseline;
-					context.textAlign = itemToDraw.textAlign;
+					context.textAlign = displayTop ? 'right' : itemToDraw.textAlign;
 
-					var label = itemToDraw.label;
 					if (helpers.isArray(label)) {
 						for (var i = 0, y = 0; i < label.length; ++i) {
 							// We just make sure the multiline element is a string here..
@@ -736,6 +756,7 @@ module.exports = function(Chart) {
 				// Draw the line at the edge of the axis
 				context.lineWidth = helpers.getValueAtIndexOrDefault(gridLines.lineWidth, 0);
 				context.strokeStyle = helpers.getValueAtIndexOrDefault(gridLines.color, 0);
+
 				var x1 = me.left,
 					x2 = me.right,
 					y1 = me.top,
