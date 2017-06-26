@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = function(Chart) {
-
+	var helpers = Chart.helpers;
 	var globalOpts = Chart.defaults.global;
 
 	globalOpts.elements.rectangle = {
@@ -12,6 +12,30 @@ module.exports = function(Chart) {
 	};
 
 	Chart.elements.Rectangle = Chart.Element.extend({
+		drawLabel: function(label) {
+			var ctx = this._chart.ctx;
+			var vm = this._view;
+			var position = this.tooltipPosition();
+			var fontSize = globalOpts.defaultFontSmallSize ||
+				globalOpts.defaultFontSize;
+			var bottomMargin = fontSize / 2;
+
+			ctx.font = helpers.fontString(
+				fontSize,
+				globalOpts.defaultFontStyle,
+				globalOpts.defaultFontFamily
+			);
+
+			ctx.fillStyle = globalOpts.defaultValueLabelColor ||
+				globalOpts.defaultFontColor;
+
+			var width = ctx.measureText(label).width;
+			var x = position.x - width / 2;
+			var y = position.y - bottomMargin;
+
+			ctx.fillText(label, x, y);
+		},
+
 		draw: function() {
 			var ctx = this._chart.ctx;
 			var vm = this._view;

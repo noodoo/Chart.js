@@ -54,7 +54,7 @@ module.exports = function(Chart) {
 			var me = this;
 			var opts = me.options;
 			var ticks = me.ticks = [];
-			var tickOpts = opts.ticks;
+			var tickOpts = opts.ticks || {};
 			var getValueOrDefault = helpers.getValueOrDefault;
 
 			// Figure out what the max number of ticks we can support it is based on the size of

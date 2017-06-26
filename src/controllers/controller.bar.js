@@ -243,10 +243,18 @@ module.exports = function(Chart) {
 		draw: function(ease) {
 			var me = this;
 			var easingDecimal = ease || 1;
-			helpers.each(me.getMeta().data, function(rectangle, index) {
-				var d = me.getDataset().data[index];
+			var dataset = me.getDataset();
+			var data = dataset.data;
+			var drawLabels = dataset.drawValueLabels;
+			var items = me.getMeta().data;
+
+			helpers.each(items, function(rectangle, index) {
+				var d = data[index];
+
 				if (d !== null && d !== undefined && !isNaN(d)) {
 					rectangle.transition(easingDecimal).draw();
+
+					if (drawLabels) rectangle.drawLabel(d);
 				}
 			}, me);
 		},
