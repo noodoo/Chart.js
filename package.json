@@ -1,5 +1,5 @@
 {
-  "name": "chart.js",
+  "name": "@noodoo/chart.js-gtr",
   "homepage": "http://www.chartjs.org",
   "description": "Simple HTML5 charts using the canvas element.",
   "version": "2.2.2",
